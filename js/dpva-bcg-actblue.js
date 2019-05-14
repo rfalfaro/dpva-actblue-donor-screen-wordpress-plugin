@@ -52,7 +52,7 @@ function getSettings(jsonPayload) {
 function getDonors(jsonPayload) {
     $.ajax({
         type: "POST",
-        url: 'https://bcgdemo.vayd.org/wp-json/bcg/v1/endpoint/',
+        url: listenerUrl,
         dataType: 'json',
         data: jsonPayload,
         contentType: 'application/json',
@@ -89,7 +89,7 @@ function getDonors(jsonPayload) {
 function getTotal(jsonPayload) {
     $.ajax({
         type: "POST",
-        url: 'https://bcgdemo.vayd.org/wp-json/bcg/v1/endpoint/',
+        url: listenerUrl,
         dataType: 'json',
         data: jsonPayload,
         contentType: 'application/json',
