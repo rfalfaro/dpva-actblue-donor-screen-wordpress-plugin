@@ -39,6 +39,8 @@ $wpdb->show_errors();
 		$setting_data_goal = '';
 		$setting_data_title = '';
 	}
+	$page_parameters = explode("/", $_GET["page"]);
+	$plugin_basename = $page_parameters[0];
 ?>
 <div class="wrap">
 
@@ -48,7 +50,7 @@ $wpdb->show_errors();
 <strong><?php echo(get_site_url().'/wp-json/actblue/v1/endpoint/'); ?></strong></p>
 
 <p>Donation Screen:<br/>
-	<strong><a href="<?php echo(get_site_url().'/wp-content/plugins/dpva-actblue-donor-screen/screen/'); ?>" target="_blank"><?php echo(get_site_url().'/wp-content/plugins/dpva-actblue-donor-screen/screen/'); ?></a></strong></p>
+	<strong><a href="<?php echo(get_site_url().'/wp-content/plugins/'.$plugin_basename.'/screen/'); ?>" target="_blank"><?php echo(get_site_url().'/wp-content/plugins/'.$plugin_basename.'/screen/'); ?></a></strong></p>
 
 <h2>Configuration</h2>
 

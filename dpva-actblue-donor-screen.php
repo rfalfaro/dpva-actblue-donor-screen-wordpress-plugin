@@ -74,23 +74,6 @@ register_deactivation_hook( __FILE__, 'dpva_actblue_donor_screen_deactivation' )
 
 /* BEGIN PUBLIC FACING FUNCTIONS AND SCRIPT HANDLERS */
 
-function get_dpva_actblue_donor_screen() {
-	global $wpdb;
-   	global $dpva_actblue_donor_screen_db_version;
-   	$table_name = $wpdb->prefix . "dpva_actblue_donor_screen";
-
-	$active_data = array();
-	$query = 
-		"SELECT event_start,event_end,post_title
-		FROM $table_name,$wpdb->posts
-		WHERE $wpdb->posts.id = $table_name.wp_post_id
-		AND $wpdb->posts.post_status= 'publish'
-		AND event_end > NOW()
-		ORDER BY event_start ASC";
-	$upcoming_show = $wpdb->get_results($query);
-	return $upcoming_show;
-}
-
 function get_dpva_actblue_donor_screen_settings() {
 	global $wpdb;
 
@@ -195,11 +178,12 @@ function get_bcg_donation( $request ) {
 // Create a custom menu item on the administrative side
 
 function dpva_actblue_donor_screen_custom_menu() {
+    $plugin_basename = basename(dirname(__FILE__));
     add_menu_page (
         'ActBlue Donor Screen Settings',
         'Donor Screen',
         'manage_options',
-        'dpva-actblue-donor-screen/admin/dpva-actblue-donor-screen-admin.php',
+        $plugin_basename.'/admin/dpva-actblue-donor-screen-admin.php',
         '',
         plugin_dir_url( __FILE__ ).'icons/full_screen.png'
     );

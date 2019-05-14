@@ -5,6 +5,10 @@
 	May 2019	
 */
 
+// Get hostname
+var hostname = document.location.hostname;
+var listenerUrl = 'https://'+hostname+'/wp-json/bcg/v1/endpoint/';
+
 // Refresh interval of 20 seconds
 var interval = 20000;
 var contributionForm = '';
@@ -22,7 +26,7 @@ function initialize() {
 function getSettings(jsonPayload) {
     $.ajax({
         type: "POST",
-        url: 'https://bcgdemo.vayd.org/wp-json/bcg/v1/endpoint/',
+        url: listenerUrl,
         dataType: 'json',
         data: jsonPayload,
         contentType: 'application/json',
