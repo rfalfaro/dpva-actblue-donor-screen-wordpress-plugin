@@ -9,10 +9,11 @@
 var hostname = document.location.hostname;
 var listenerUrl = 'https://'+hostname+'/wp-json/bcg/v1/endpoint/';
 
-// Refresh interval of 20 seconds
-var interval = 20000;
+// Refresh interval of 10 seconds
+var interval = 10000;
 var contributionForm = '';
-var contributionGoal = '';
+var contributionForm = '';
+var alternateContributionForm = '';
 
 initialize();
 
@@ -37,11 +38,13 @@ function getSettings(jsonPayload) {
             } else {
                 $("#displayTitle").text(data[0].title);
                 contributionForm = data[0].actblue_contribution_form;
+                alternateContributionForm = data[0].alternate_actblue_contribution_form;
                 contributionGoal = data[0].goal;
                 $("#displayGoal").text('$' + commaSeparateNumber(data[0].goal));
                 var payload = {
                     functionname: 'getDonors',
-                    contributionForm: contributionForm
+                    contributionForm: contributionForm,
+                    alternateContributionForm: alternateContributionForm
                 };
                 jsonProcessor(getDonors, payload);
             }            
@@ -62,16 +65,25 @@ function getDonors(jsonPayload) {
         success: function (data) {
             var donorHtml = '';
             $.each(data, function (index, value) {
-                donorHtml = donorHtml +
+	            if(value.contribution_form == alternateContributionForm)
+	            {
+		        	donorHtml = donorHtml +
+                    '<div class="col-md-4">' +
+                    '<h3>Anonymous</h3>' +
+                    '</div>';   
+	            } else {
+		            donorHtml = donorHtml +
                     '<div class="col-md-4">' +
                     '<h3>' + value.firstname + ' ' + value.lastname + '</h3>' +
                     '</div>';
+	            }
             });
             $("#displayLatestDonors").html(donorHtml);
             // get total calculation
             var payload = {
                 functionname: 'getTotal',
-                contributionForm: contributionForm
+                contributionForm: contributionForm,
+                alternateContributionForm: alternateContributionForm
             };
             jsonProcessor(getTotal, payload);
         },

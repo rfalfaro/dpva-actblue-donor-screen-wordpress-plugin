@@ -45,6 +45,7 @@ function dpva_actblue_donor_screen_install () {
 		$sql[] = "CREATE TABLE $settings_table_name (
 			id int(11) NOT NULL AUTO_INCREMENT,
 			actblue_contribution_form varchar(255) NULL,
+			alternate_actblue_contribution_form varchar(255) NULL,
 			goal varchar(10) NULL,
 			title varchar(255) NULL,
 			UNIQUE KEY id (id)
@@ -80,7 +81,7 @@ function get_dpva_actblue_donor_screen_settings() {
 	$table_name = $wpdb->prefix . "dpva_actblue_donor_screen_settings";
 
 	$query =
-		"SELECT actblue_contribution_form,goal,title
+		"SELECT actblue_contribution_form,alternate_actblue_contribution_form,goal,title
 		FROM $table_name";
 	$dpva_actblue_donor_screen_settings = $wpdb->get_results($query);
 	return $dpva_actblue_donor_screen_settings;
@@ -154,17 +155,29 @@ function get_bcg_donation( $request ) {
 	switch($function_name)
 	{
 		case 'getSettings':
-			$query = "SELECT title,goal,actblue_contribution_form FROM $settings_table_name";
+			$query = "SELECT title,goal,actblue_contribution_form,alternate_actblue_contribution_form FROM $settings_table_name";
 			$query_results = $wpdb->get_results($query);
 		break;
 		case 'getDonors':
 			$contribution_form = $data['contributionForm'];
-			$query = "SELECT firstname,lastname,amount FROM $donation_table_name WHERE contribution_form='$contribution_form' ORDER BY created_at DESC LIMIT 3";
+			$alternate_contribution_form = $data['alternateContributionForm'];
+			if($alternate_contribution_form != '')
+			{
+				$query = "SELECT firstname,lastname,amount FROM $donation_table_name WHERE (contribution_form='$contribution_form' OR contribution_form='$alternate_contribution_form') ORDER BY created_at DESC LIMIT 3";
+			} else {
+				$query = "SELECT firstname,lastname,amount,contribution_form FROM $donation_table_name WHERE contribution_form='$contribution_form' ORDER BY created_at DESC LIMIT 3";
+			}
 			$query_results = $wpdb->get_results($query);
 		break;
 		case 'getTotal':
 			$contribution_form = $data['contributionForm'];
-			$query = "SELECT FORMAT(SUM(amount),0) AS total_amount FROM $donation_table_name WHERE contribution_form='$contribution_form'";
+			$alternate_contribution_form = $data['alternateContributionForm'];
+			if($alternate_contribution_form != '')
+			{
+				$query = "SELECT FORMAT(SUM(amount),0) AS total_amount FROM $donation_table_name WHERE (contribution_form='$contribution_form' OR contribution_form='$alternate_contribution_form')";
+			} else {
+				$query = "SELECT FORMAT(SUM(amount),0) AS total_amount FROM $donation_table_name WHERE contribution_form='$contribution_form'";
+			}
 			$query_results = $wpdb->get_row($query);
 		break;
 	}
