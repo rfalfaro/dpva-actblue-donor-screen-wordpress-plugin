@@ -163,7 +163,7 @@ function get_bcg_donation( $request ) {
 			$alternate_contribution_form = $data['alternateContributionForm'];
 			if($alternate_contribution_form != '')
 			{
-				$query = "SELECT firstname,lastname,amount FROM $donation_table_name WHERE (contribution_form='$contribution_form' OR contribution_form='$alternate_contribution_form') ORDER BY created_at DESC LIMIT 3";
+				$query = "SELECT firstname,lastname,amount,contribution_form FROM $donation_table_name WHERE (contribution_form='$contribution_form' OR contribution_form='$alternate_contribution_form') ORDER BY created_at DESC LIMIT 3";
 			} else {
 				$query = "SELECT firstname,lastname,amount,contribution_form FROM $donation_table_name WHERE contribution_form='$contribution_form' ORDER BY created_at DESC LIMIT 3";
 			}

@@ -9,8 +9,8 @@
 var hostname = document.location.hostname;
 var listenerUrl = 'https://'+hostname+'/wp-json/bcg/v1/endpoint/';
 
-// Refresh interval of 10 seconds
-var interval = 10000;
+// Refresh interval of 5 seconds
+var interval = 5000;
 var contributionForm = '';
 var contributionForm = '';
 var alternateContributionForm = '';
@@ -32,11 +32,11 @@ function getSettings(jsonPayload) {
         data: jsonPayload,
         contentType: 'application/json',
         success: function (data) {
-            if (data.length == 0) {
+            if (data.length === 0) {
                 $("#displayTitle").text("You need to setup the ActBlue parameters before continuing");
                 $(".progress").hide();
             } else {
-                $("#displayTitle").text(data[0].title);
+                $("#displayTitle").text(data[0].title.replace(/\\"/g, '"'));
                 contributionForm = data[0].actblue_contribution_form;
                 alternateContributionForm = data[0].alternate_actblue_contribution_form;
                 contributionGoal = data[0].goal;
@@ -65,18 +65,18 @@ function getDonors(jsonPayload) {
         success: function (data) {
             var donorHtml = '';
             $.each(data, function (index, value) {
-	            if(value.contribution_form == alternateContributionForm)
-	            {
-		        	donorHtml = donorHtml +
+                if (value.contribution_form === alternateContributionForm)
+                {
+                    donorHtml = donorHtml +
                     '<div class="col-md-4">' +
                     '<h3>Anonymous</h3>' +
-                    '</div>';   
-	            } else {
-		            donorHtml = donorHtml +
+                        '</div>';
+                } else {
+                    donorHtml = donorHtml +
                     '<div class="col-md-4">' +
                     '<h3>' + value.firstname + ' ' + value.lastname + '</h3>' +
-                    '</div>';
-	            }
+                        '</div>';
+                }
             });
             $("#displayLatestDonors").html(donorHtml);
             // get total calculation
@@ -107,7 +107,7 @@ function getTotal(jsonPayload) {
         contentType: 'application/json',
         success: function (data) {
             var progress = '';
-            if (data.total_amount == null) {
+            if (data.total_amount === null) {
                 $("#displayTotal").text('$0.00');
                 progress = 0;
             } else {

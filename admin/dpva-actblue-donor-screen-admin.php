@@ -14,6 +14,7 @@ $wpdb->show_errors();
 
 		$wpdb->insert($settings_table_name,array(
 					'actblue_contribution_form' => $setting_input_contribution_form,
+					'alternate_actblue_contribution_form'=> $setting_input_alternate_contribution_form,
 					'goal' =>  $setting_input_goal,
 					'title' => $setting_input_title));
 	}
@@ -33,7 +34,7 @@ $wpdb->show_errors();
 		$setting_data_contribution_form = $get_parameters->actblue_contribution_form;
 		$setting_data_alternate_contribution_form = $get_parameters->alternate_actblue_contribution_form;
 		$setting_data_goal = $get_parameters->goal;
-		$setting_data_title = $get_parameters->title;
+		$setting_data_title = wp_unslash($get_parameters->title);
 	}
 	else
 	{
@@ -65,7 +66,7 @@ $wpdb->show_errors();
 <p><label>Goal amount</label><br/>
 <input type="text" name="wp_dpva_actblue_donor_screen_goal" style="width: 300px;" value="<?php echo $setting_data_goal; ?>" /></p>
 <p><label>Title</label><br/>
-<input type="text" name="wp_dpva_actblue_donor_screen_title" style="width: 300px;" value="<?php echo $setting_data_title; ?>" /></p>
+<input type="text" name="wp_dpva_actblue_donor_screen_title" style="width: 300px;" value="<?php echo htmlentities($setting_data_title); ?>" /></p>
 <p><input name="submit_btn" class="button button-primary button-large" type="submit" value="Store Settings" /></p>
 </form>
 
