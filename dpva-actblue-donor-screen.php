@@ -63,11 +63,7 @@ register_activation_hook( __FILE__, 'dpva_actblue_donor_screen_install' );
 /* BEGIN DEACTIVATION FUNCTIONS */
 
 function dpva_actblue_donor_screen_deactivation() {
-	global $wpdb;
-	$table = $wpdb->prefix."dpva_actblue_donor_screen";
-	$settings_table_name = $wpdb->prefix . "dpva_actblue_donor_screen_settings";
-	$wpdb->query("DROP TABLE IF EXISTS $table");
-	$wpdb->query("DROP TABLE IF EXISTS $settings_table_name");
+	
 }
 register_deactivation_hook( __FILE__, 'dpva_actblue_donor_screen_deactivation' );
 

@@ -1,18 +1,15 @@
 <?php
+
 // If uninstall is not called from WordPress, exit
 if ( !defined( 'WP_UNINSTALL_PLUGIN' ) ) {
     exit();
 }
  
-$option_name = 'plugin_option_name';
- 
-delete_option( $option_name );
- 
-// For site options in Multisite
-delete_site_option( $option_name );  
- 
-// Drop a custom db table
+// Drop custom plugin tables to fully uninstall this plugin
 global $wpdb;
-$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}mytable" );
+$table = $wpdb->prefix."dpva_actblue_donor_screen";
+$settings_table_name = $wpdb->prefix . "dpva_actblue_donor_screen_settings";
+$wpdb->query("DROP TABLE IF EXISTS $table");
+$wpdb->query("DROP TABLE IF EXISTS $settings_table_name");
 
 ?>
