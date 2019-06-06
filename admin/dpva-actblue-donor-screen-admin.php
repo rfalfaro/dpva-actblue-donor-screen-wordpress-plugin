@@ -19,16 +19,23 @@ $wpdb->show_errors();
 					'title' => $setting_input_title));
 	}
 
+	if(isset($_REQUEST['clear_btn']))
+	{
+		global $wpdb;
+		$table_name = $wpdb->prefix . "dpva_actblue_donor_screen";
+		$wpdb->query("TRUNCATE TABLE $table_name");
+	}
+
 	function dpva_actblue_donor_screen_get_settings()
 	{
 		global $wpdb;
 		$settings_table_name = $wpdb->prefix . "dpva_actblue_donor_screen_settings";
-		$active_data = array();
 		$settings_parameters = $wpdb->get_row("SELECT * FROM $settings_table_name");
 		return $settings_parameters;
 	}
-
+	
 	$get_parameters = dpva_actblue_donor_screen_get_settings();
+	
 	if(sizeof($get_parameters) != '0')
 	{
 		$setting_data_contribution_form = $get_parameters->actblue_contribution_form;
@@ -42,7 +49,26 @@ $wpdb->show_errors();
 		$setting_data_alternate_contribution_form = '';
 		$setting_data_goal = '';
 		$setting_data_title = '';
+	}	
+	
+	function dpva_actblue_donor_count($contribution_form)
+	{
+		global $wpdb;
+		$table_name = $wpdb->prefix . "dpva_actblue_donor_screen";
+		$get_donor_count_query = "SELECT COUNT(*) FROM $table_name WHERE contribution_form='$contribution_form'";
+		$donor_counter = $wpdb->get_var($get_donor_count_query);
+		return $donor_counter;
 	}
+
+	function dpva_actblue_global_donor_count()
+	{
+		global $wpdb;
+		$table_name = $wpdb->prefix . "dpva_actblue_donor_screen";
+		$get_donor_count_query = "SELECT COUNT(*) FROM $table_name";		
+		$donor_counter = $wpdb->get_var($get_donor_count_query);
+		return $donor_counter;
+	}
+	
 	$page_parameters = explode("/", $_GET["page"]);
 	$plugin_basename = $page_parameters[0];
 ?>
@@ -68,6 +94,21 @@ $wpdb->show_errors();
 <p><label>Title</label><br/>
 <input type="text" name="wp_dpva_actblue_donor_screen_title" style="width: 300px;" value="<?php echo htmlentities($setting_data_title); ?>" /></p>
 <p><input name="submit_btn" class="button button-primary button-large" type="submit" value="Store Settings" /></p>
+</form>
+
+<h2>Donor Data</h2>
+<?php if(!empty($setting_data_contribution_form)) { ?>
+<p>Total registered donations for <?php echo($setting_data_contribution_form); ?>: <strong><?php echo(dpva_actblue_donor_count($setting_data_contribution_form)); ?></strong></p>
+<?php } ?>
+
+<?php if(!empty($setting_data_alternate_contribution_form)) { ?>
+<p>Total registered donations for <?php echo($setting_data_alternate_contribution_form); ?>: <strong><?php echo(dpva_actblue_donor_count($setting_data_alternate_contribution_form)); ?></strong></p>
+<?php } ?>
+
+<p>Total registered donations: <strong><?php echo(dpva_actblue_global_donor_count()); ?></strong></p>
+
+<form method="post" action="" onsubmit="return confirm('Are you sure you want to clear all donor data?');">
+<p><input name="clear_btn" class="button button-primary button-large" type="submit" value="Clear Donor Data"></p>
 </form>
 
 </div>

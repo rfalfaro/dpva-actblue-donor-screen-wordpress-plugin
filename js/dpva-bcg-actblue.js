@@ -69,12 +69,12 @@ function getDonors(jsonPayload) {
                 {
                     donorHtml = donorHtml +
                     '<div class="col-md-4">' +
-                    '<h3>Anonymous</h3>' +
+                    '<h2>Anonymous</h2>' +
                         '</div>';
                 } else {
                     donorHtml = donorHtml +
                     '<div class="col-md-4">' +
-                    '<h3>' + value.firstname + ' ' + value.lastname + '</h3>' +
+                    '<h2>' + value.firstname + ' ' + value.lastname + '</h2>' +
                         '</div>';
                 }
             });

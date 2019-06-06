@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:600,900&display=swap');
+
+body {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 24px;
+    color: #0A3255;
+}
+
+#displayTitle {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+    font-size: 55px;
+}
+
+#displayTotal {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+    font-size: 120px;
+    color: #00A8E1;
+}
+
+#displayThankYou {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+    font-size: 55px;
+}
+
+#displayLatestDonors {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+    font-size: 60px;
+    color: #00A8E1;
+}
+
+.goal-text-display {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 40px;
+}
+
+.progress {
+    height: 3rem !important;
+}
+
+.getting-text-display {
+    font-size: 16px;
+    color: red;
+}
+
+.disclaimer-text-display {
+    margin-top: 40px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+}
