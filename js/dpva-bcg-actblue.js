@@ -5,6 +5,8 @@
 	May 2019	
 */
 
+// TO DO: improve comments
+
 // Get hostname
 var hostname = document.location.hostname;
 var listenerUrl = 'https://'+hostname+'/wp-json/bcg/v1/endpoint/';

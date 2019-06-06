@@ -1,5 +1,5 @@
 <?php
-$wpdb->show_errors();
+	// Handles the main information submission form
 	if(isset($_REQUEST['submit_btn']))
 	{
 		global $wpdb;
@@ -22,14 +22,14 @@ $wpdb->show_errors();
 					'active_fl' => $setting_input_active_fl,
 					'disclaimer' => $setting_input_disclaimer));
 	}
-
+	// Handles the button that clears all donor data
 	if(isset($_REQUEST['clear_btn']))
 	{
 		global $wpdb;
 		$table_name = $wpdb->prefix . "dpva_actblue_donor_screen";
 		$wpdb->query("TRUNCATE TABLE $table_name");
 	}
-
+	// Handles the on-screen total and donor display deactivation
 	if(isset($_REQUEST['status_deactivate']))
 	{
 		global $wpdb;
@@ -37,7 +37,7 @@ $wpdb->show_errors();
 		$query = "UPDATE $settings_table_name SET active_fl='0'";
 		$wpdb->query($query);
 	}
-
+	// Handles the on-screen total and donor display activation
 	if(isset($_REQUEST['status_activate']))
 	{
 		global $wpdb;
@@ -45,7 +45,7 @@ $wpdb->show_errors();
 		$query = "UPDATE $settings_table_name SET active_fl='1'";
 		$wpdb->query($query);
 	}
-
+	// Gets the display activation status
 	function dpva_actblue_status()
 	{
 		global $wpdb;
@@ -53,19 +53,17 @@ $wpdb->show_errors();
 		$status_fl = $wpdb->get_var("SELECT active_fl FROM $settings_table_name");
 		return $status_fl;
 	}
-
 	$screen_status = dpva_actblue_status();
-
+	// Gets the donor screen settings
 	function dpva_actblue_donor_screen_get_settings()
 	{
 		global $wpdb;
 		$settings_table_name = $wpdb->prefix . "dpva_actblue_donor_screen_settings";
 		$settings_parameters = $wpdb->get_row("SELECT * FROM $settings_table_name");
 		return $settings_parameters;
-	}
-	
+	}	
 	$get_parameters = dpva_actblue_donor_screen_get_settings();
-	
+	// Populates or clears the main donation information form
 	if(sizeof($get_parameters) != '0')
 	{
 		$setting_data_contribution_form = $get_parameters->actblue_contribution_form;
@@ -82,7 +80,7 @@ $wpdb->show_errors();
 		$setting_data_title = '';
 		$setting_data_disclaimer = '';
 	}	
-	
+	// Gets the donor count given a specified contribution form
 	function dpva_actblue_donor_count($contribution_form)
 	{
 		global $wpdb;
@@ -91,7 +89,7 @@ $wpdb->show_errors();
 		$donor_counter = $wpdb->get_var($get_donor_count_query);
 		return $donor_counter;
 	}
-
+	// Gets the global donor count on the database
 	function dpva_actblue_global_donor_count()
 	{
 		global $wpdb;
@@ -100,7 +98,7 @@ $wpdb->show_errors();
 		$donor_counter = $wpdb->get_var($get_donor_count_query);
 		return $donor_counter;
 	}
-	
+	// Used to explode this page's URL in order to list the webhook URLs
 	$page_parameters = explode("/", $_GET["page"]);
 	$plugin_basename = $page_parameters[0];
 ?>

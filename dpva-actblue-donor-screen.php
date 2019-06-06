@@ -89,7 +89,7 @@ function get_dpva_actblue_donor_screen_settings() {
 
 add_action( 'rest_api_init', 'actblue_listener_registration' );
 
-// Registers the ActBlue Secure Endpoint
+// REGISTERS THE ACTBLUE AND SCREEN WEBHOOKS
 
 function actblue_listener_registration() {
   register_rest_route( 'actblue/v1', '/endpoint', array(
@@ -106,7 +106,7 @@ function actblue_listener_registration() {
   ) );
 }
 
-// Handles the ActBlue Webhook notification
+// HANDLES THE INCOMING ACTBLUE WEBHOOK NOTIFICATIONS
 
 function actblue_donation( $request ) {
 	global $wpdb;
@@ -139,6 +139,8 @@ function actblue_donation( $request ) {
 	
 	return new WP_REST_Response( $data, 200 );
 }
+
+// HANDLES THE ON-SCREEN REQUESTS
 
 function get_bcg_donation( $request ) {
 	global $wpdb;
@@ -190,7 +192,7 @@ function get_bcg_donation( $request ) {
 
 /* BEGIN ADMINISTRATIVE MENU ITEMS */
 
-// Create a custom menu item on the administrative side
+// CREATES A CUSTOM MENU ITEM
 
 function dpva_actblue_donor_screen_custom_menu() {
     $plugin_basename = basename(dirname(__FILE__));
