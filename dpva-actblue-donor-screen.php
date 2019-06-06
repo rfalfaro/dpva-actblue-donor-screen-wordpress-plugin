@@ -48,6 +48,8 @@ function dpva_actblue_donor_screen_install () {
 			alternate_actblue_contribution_form varchar(255) NULL,
 			goal varchar(10) NULL,
 			title varchar(255) NULL,
+			disclaimer varchar(255) NULL,
+			active_fl int(1) NULL,
 			UNIQUE KEY id (id)
 		) $charset_collate;";
 	}
@@ -150,8 +152,12 @@ function get_bcg_donation( $request ) {
 	$function_name = $data['functionname'];
 	switch($function_name)
 	{
+		case 'getStatus':
+			$query = "SELECT active_fl FROM $settings_table_name";
+			$query_results = $wpdb->get_results($query);
+		break;
 		case 'getSettings':
-			$query = "SELECT title,goal,actblue_contribution_form,alternate_actblue_contribution_form FROM $settings_table_name";
+			$query = "SELECT title,goal,actblue_contribution_form,alternate_actblue_contribution_form,disclaimer FROM $settings_table_name";
 			$query_results = $wpdb->get_results($query);
 		break;
 		case 'getDonors':

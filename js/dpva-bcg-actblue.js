@@ -19,9 +19,42 @@ initialize();
 
 function initialize() {
     var payload = {
-        functionname: 'getSettings'
+        functionname: 'getStatus'
     };
-    jsonProcessor(getSettings, payload);
+    jsonProcessor(getStatus, payload);
+}
+
+function getStatus(jsonPayload) {
+    $.ajax({
+        type: "POST",
+        url: listenerUrl,
+        dataType: 'json',
+        data: jsonPayload,
+        contentType: 'application/json',
+        success: function (data) {
+            console.log(data);
+            var payload = {
+                functionname: 'getSettings'
+            };
+            jsonProcessor(getSettings, payload);
+            if (data[0].active_fl == '1') {
+                var payload = {
+                    functionname: 'getDonors',
+                    contributionForm: contributionForm,
+                    alternateContributionForm: alternateContributionForm
+                };
+                jsonProcessor(getDonors, payload);
+            } else {
+                $("#displayLatestDonors").html('');
+                $("#displayTotal").text('$0.00');
+                $(".progress-bar").css('width', 0 + '%');
+            }
+        },
+        complete: function () {
+            // Trigger function again per each interval
+            setTimeout(function () { getStatus(jsonPayload); }, interval);
+        }
+    });
 }
 
 function getSettings(jsonPayload) {
@@ -41,12 +74,7 @@ function getSettings(jsonPayload) {
                 alternateContributionForm = data[0].alternate_actblue_contribution_form;
                 contributionGoal = data[0].goal;
                 $("#displayGoal").text('$' + commaSeparateNumber(data[0].goal));
-                var payload = {
-                    functionname: 'getDonors',
-                    contributionForm: contributionForm,
-                    alternateContributionForm: alternateContributionForm
-                };
-                jsonProcessor(getDonors, payload);
+                $("#displayDisclaimer").text(data[0].disclaimer.replace(/\\"/g, '"'));
             }            
         }
     });
@@ -63,39 +91,38 @@ function getDonors(jsonPayload) {
 
         },
         success: function (data) {
-            var donorHtml = '';
-            $.each(data, function (index, value) {
-                if (value.contribution_form === alternateContributionForm)
-                {
-                    donorHtml = donorHtml +
-                    '<div class="col-md-4">' +
-                    '<h2>Anonymous</h2>' +
-                        '</div>';
-                } else {
-                    donorHtml = donorHtml +
-                    '<div class="col-md-4">' +
-                    '<h2>' + value.firstname + ' ' + value.lastname + '</h2>' +
-                        '</div>';
-                }
-            });
-            $("#displayLatestDonors").html(donorHtml);
-            // get total calculation
-            var payload = {
-                functionname: 'getTotal',
-                contributionForm: contributionForm,
-                alternateContributionForm: alternateContributionForm
-            };
-            jsonProcessor(getTotal, payload);
+            processDonors(data);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
             console.log(textStatus);
             console.log(errorThrown);
-        },
-        complete: function () {
-            // Trigger function again per each interval
-            setTimeout(function () { getDonors(jsonPayload); }, interval);
         }
     });
+}
+
+function processDonors(data) {
+    var donorHtml = '';
+    $.each(data, function (index, value) {
+        if (value.contribution_form === alternateContributionForm) {
+            donorHtml = donorHtml +
+                '<div class="col-md-4">' +
+                '<h2>Anonymous</h2>' +
+                '</div>';
+        } else {
+            donorHtml = donorHtml +
+                '<div class="col-md-4">' +
+                '<h2>' + value.firstname + ' ' + value.lastname + '</h2>' +
+                '</div>';
+        }
+    });
+    $("#displayLatestDonors").html(donorHtml);
+    // get total calculation
+    var payload = {
+        functionname: 'getTotal',
+        contributionForm: contributionForm,
+        alternateContributionForm: alternateContributionForm
+    };
+    jsonProcessor(getTotal, payload);
 }
 
 function getTotal(jsonPayload) {
@@ -106,26 +133,30 @@ function getTotal(jsonPayload) {
         data: jsonPayload,
         contentType: 'application/json',
         success: function (data) {
-            var progress = '';
-            if (data.total_amount === null) {
-                $("#displayTotal").text('$0.00');
-                progress = 0;
-            } else {
-                var current = data.total_amount.replace(/,/g, '');
-                $("#displayTotal").text('$' + data.total_amount);
-                progress = Math.round(current / contributionGoal * 100);
-            }            
-            if (progress <= 100) {
-                $(".progress-bar").css('width', progress + '%');
-            } else {
-                $(".progress-bar").css('width', '100%');
-            }
+            processTotal(data);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
             console.log(textStatus);
             console.log(errorThrown);
         }
     });
+}
+
+function processTotal(data) {
+    var progress = '';
+    if (data.total_amount === null) {
+        $("#displayTotal").text('$0.00');
+        progress = 0;
+    } else {
+        var current = data.total_amount.replace(/,/g, '');
+        $("#displayTotal").text('$' + data.total_amount);
+        progress = Math.round(current / contributionGoal * 100);
+    }
+    if (progress <= 100) {
+        $(".progress-bar").css('width', progress + '%');
+    } else {
+        $(".progress-bar").css('width', '100%');
+    }
 }
 
 function commaSeparateNumber(val) {

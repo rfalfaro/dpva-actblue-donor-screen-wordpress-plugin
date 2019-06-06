@@ -39,7 +39,7 @@
 		<div style="width: 100%; height: 30px;"></div>
 		<div id="displayLatestDonors" class="row">
 		</div>
-		<div class="disclaimer-text-display" align="center">
+		<div id="displayDisclaimer" class="disclaimer-text-display" align="center">
 		Txt HELP for help, STOP to end.  Msg & Data rates may apply.  Privacy Policy: https://vademocrats.org/dpva-privacy-policy/
 		</div>
 	</div>
